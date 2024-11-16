@@ -1,0 +1,116 @@
+class Program
+{
+    static void Main(string[] args)
+    {
+        string copy = @"C:\Users\revno\COPYPAPKA\COPY.docx";
+        string copy2 = @"C:\Users\revno\COPYPAPKA\COPY2.docx";
+        string scopy = @"C:\Users\revno\COPYPAPKA\TUT.docx";
+        string scopy2 = @"C:\Users\revno\COPYPAPKA\TUT2.docx";
+        //Здесь объявляются строки, содержащие пути к файлам. copy и copy2 — это исходные файлы, а scopy и scopy2 — это места, куда эти файлы будут скопированы.
+        try //Обработка исключений
+        {
+            if (File.Exists(copy)) //Проверяет, существует ли файл по указанному пути copy
+            {
+                Stopwatch stopwatch = new Stopwatch(); 
+                stopwatch.Start(); //Создает новый экземпляр Stopwatch и запускает его.Это используется для измерения времени выполнения операции.
+                FileInfo file1 = new FileInfo(copy);
+                file1.CopyTo(scopy, true);
+                //Создает объект FileInfo, представляющий файл copy, и копирует его в scopy.Второй параметр true указывает, что если файл с таким именем уже существует, он будет перезаписан.
+                stopwatch.Stop();
+                Console.WriteLine("Файл COPY скопирован");
+                Console.WriteLine("Время выполнения: " + stopwatch.Elapsed.ToString());
+                //Останавливает таймер и выводит в консоль сообщение о том, что файл был скопирован, а также время, затраченное на копирование
+
+            }
+            else
+            {
+                Console.WriteLine("Файл не найден");//Обработка исключения
+            }
+            if (File.Exists(copy2)) //Все то же самое со вторым файлом
+            {
+                Stopwatch stopwatch1 = new Stopwatch();
+                stopwatch1.Start();
+                FileInfo file2 = new FileInfo(copy2);
+                file2.CopyTo(scopy2, true);
+                stopwatch1.Stop();
+                Console.WriteLine("Файл COPY2 успешно скопирован");
+                Console.WriteLine("Время выполнения: " + stopwatch1.Elapsed.ToString());
+            }
+            else
+            {
+                Console.WriteLine("Файл не найден");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.Write(ex.ToString());
+        }
+
+        Thread t1 = new Thread(FirstThread);
+        Thread t2 = new Thread(SecondThread);
+        //Создаются два потока, t1 и t2, которые будут выполнять методы FirstThread и SecondThread соответственно.
+        t1.Start();
+        t2.Start();
+        //Запускает оба потока. Каждый поток будет выполнять свою задачу параллельно.
+        t1.Join();
+        t2.Join();
+        //Ожидает завершения обоих потоков. Это означает, что основной поток будет ждать, пока t1 и t2 не завершатся.
+        Parallel.Invoke(FirstThread, SecondThread);
+        //Запускает оба метода FirstThread и SecondThread параллельно, используя Parallel.Invoke.
+    }
+    public static void FirstThread() //Объявляет метод FirstThread, который будет выполняться в одном из потоков.
+    {
+        string copy = @"C:\Users\revno\COPYPAPKA\COPY.docx";//Те же махинации, что в начале кода для первого потока
+        string scopy = @"C:\Users\revno\COPYPAPKA\TUT.docx";
+        try
+        {
+            if (File.Exists(copy))
+            {
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                FileInfo f1 = new FileInfo(copy);
+                f1.CopyTo(scopy, true);
+                stopwatch.Stop();
+                Console.WriteLine("Файл COPY скопирован");
+                Console.WriteLine("Время выполнения: " + stopwatch.Elapsed.ToString());
+
+            }
+            else
+            {
+                Console.WriteLine("Файл не найден");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Write(ex.ToString());
+        }
+    }
+    public static void SecondThread()
+    {
+        string copy2 = @"C:\Users\revno\COPYPAPKA\COPY2.docx"; //Те же махинации, что в начале кода для второго потока
+        string scopy2 = @"C:\Users\revno\COPYPAPKA\TUT2.docx";
+        try
+        {
+            if (File.Exists(copy2))
+            {
+                Stopwatch stopwatch1 = new Stopwatch();
+                stopwatch1.Start();
+                FileInfo f2 = new FileInfo(copy2);
+                f2.CopyTo(scopy2, true);
+                stopwatch1.Stop();
+                Console.WriteLine("Файл COPY2 успешно скопирован");
+                Console.WriteLine("Время выполнения: " + stopwatch1.Elapsed.ToString());
+            }
+            else
+            {
+                Console.WriteLine("Файл не найден");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.Write(ex.ToString());
+        }
+    }
+}
